@@ -3,9 +3,6 @@
 module Que
   module ActiveRecord
     class << self
-      # Use Rails' executor (if present) to make sure that the connection
-      # we're using isn't taken from us while the block runs. See
-      # https://github.com/que-rb/que/issues/166#issuecomment-274218910
       def wrap_in_rails_executor(&block)
         if defined?(::Rails.application.executor)
           ::Rails.application.executor.wrap(&block)
@@ -21,6 +18,9 @@ module Que
 
         # Check out a PG::Connection object from ActiveRecord's pool.
         def checkout
+          # Use Rails' executor (if present) to make sure that the connection
+          # we're using isn't taken from us while the block runs. See
+          # https://github.com/que-rb/que/issues/166#issuecomment-274218910
           Que::ActiveRecord.wrap_in_rails_executor do
             ::ActiveRecord::Base.connection_pool.with_connection do |conn|
                yield conn.raw_connection
@@ -32,6 +32,9 @@ module Que
       module JobMiddleware
         class << self
           def call(job)
+            # Use Rails' executor (if present) to make sure that the connection
+            # used by the job isn't returned to the pool prematurely. See
+            # https://github.com/que-rb/que/issues/411
             Que::ActiveRecord.wrap_in_rails_executor do
               yield
             end
