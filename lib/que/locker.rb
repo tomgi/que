@@ -209,9 +209,9 @@ module Que
               if poll
                 @queues.map do |queue_name, interval|
                   Poller.new(
-                    connection:    @connection,
-                    queue:         queue_name,
-                    poll_interval: interval,
+                    connection:             @connection,
+                    queue:                  queue_name,
+                    poll_interval:          interval,
                     poll_interval_variance: poll_interval_variance,
                   )
                 end

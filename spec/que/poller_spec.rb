@@ -44,6 +44,7 @@ describe Que::Poller do
         connection: override_connection || connection,
         queue: queue_name,
         poll_interval: 5,
+        poll_interval_variance: 0,
       )
 
     Que::Poller.setup(override_connection || connection)
@@ -245,6 +246,7 @@ describe Que::Poller do
         connection: connection,
         queue: 'default',
         poll_interval: 5,
+        poll_interval_variance: 0,
       )
     end
 
